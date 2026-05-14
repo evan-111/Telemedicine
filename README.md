@@ -25,6 +25,7 @@ configuration that i used to set up my ubuntu server in my homelab for this proj
 11. CREATE DATABASE <NAME>;
 12. make sure database is connected(below is the the code i use to make sure, make sure is in .php file)
 
+<!--
 <?php
 $servername = "localhost";
 $username = "root";
@@ -45,6 +46,7 @@ if ($conn->connect_error) {
     echo "<br>Tables found: " . $result->num_rows;
 }
 ?>
+-->>
 
 
 A full-stack telemedicine booking system with video consultation, built with PHP + MySQL + vanilla JS. The architecture demonstrates five GoF design patterns working together.
