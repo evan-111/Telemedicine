@@ -1,6 +1,4 @@
 # Smart Doctor Booking — Telemedicine System
-
-<<<<<<< HEAD
 Telemedicine is a school project i have for my software design class where we need to use design pattern to code a health system or a school system , i chose the health system . The primary goal of telemedicine is to demonstrate the design pattern used to build the web system. It is design to centralised all the feature of a online doctor booking system for video consultation with doctors .
 
 The design pattern used are:
@@ -46,8 +44,7 @@ if ($conn->connect_error) {
 }
 ?>
 
-//just change some of the code
-=======
+
 A full-stack telemedicine booking system with video consultation, built with PHP + MySQL + vanilla JS. The architecture demonstrates five GoF design patterns working together.
 
 ## Design Patterns
@@ -173,5 +170,6 @@ systemctl enable apache2 mysql && systemctl start apache2 mysql
 mysql_secure_installation
 mysql -u root -p
 ```
-
 Import `schema.sql` via phpMyAdmin or CLI, then place the project folder under `/var/www/html/` (or `C:\xampp\htdocs\` on Windows).
+
+# telemedicine
