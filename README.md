@@ -48,7 +48,6 @@ if ($conn->connect_error) {
 A full-stack telemedicine booking system with video consultation, built with PHP + MySQL + vanilla JS. The architecture demonstrates five GoF design patterns working together.
 
 ## Design Patterns
->>>>>>> 29bf76f (updated README.md)
 
 ### 1. Singleton — Database Connection
 **File:** `config/database.php`
@@ -160,16 +159,3 @@ Status toggle (Doctor):
 - **Video:** WebRTC (`getUserMedia`)
 - **Server:** Apache2 on Ubuntu
 
-## Server Setup
-
-```bash
-sudo apt update && apt upgrade -y
-apt install apache2 php php-mysql mysql-server -y
-apt install php-curl php-gd php-mbstring php-xml php-zip -y
-systemctl enable apache2 mysql && systemctl start apache2 mysql
-mysql_secure_installation
-mysql -u root -p
-```
-Import `schema.sql` via phpMyAdmin or CLI, then place the project folder under `/var/www/html/` (or `C:\xampp\htdocs\` on Windows).
-
-# telemedicine
