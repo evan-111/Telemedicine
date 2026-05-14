@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Doctor Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="page-login" class="page active">
+  <div class="login-bg-new"></div>
+  <div class="login-center">
+    <div class="login-card-new">
+
+      <div class="login-brand-new">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 105 2H4a2 2 0 00-2 2v5a6 6 0 006 6v0a6 6 0 006-6V4a2 2 0 00-2-2h-1a.2.2 0 10.3.3"/><path d="M8 15v1a6 6 0 006 6v0a6 6 0 006-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+        <span>Smart Doctor</span>
+      </div>
+
+      <h2 class="login-title-new">Welcome back</h2>
+      <p class="login-sub-new">Sign in to your account</p>
+
+      <div class="form-group-new">
+        <label class="label-new">EMAIL</label>
+        <input type="email" id="login-email" class="input-new" placeholder="you@example.com">
+      </div>
+
+      <div class="form-group-new">
+        <label class="label-new">PASSWORD</label>
+        <div class="input-with-icon">
+          <input type="password" id="login-password" class="input-new" placeholder="••••••••">
+        </div>
+      </div>
+
+      <button class="btn-signin" onclick="doLogin()">Sign In</button>
+
+      <p class="register-link-new">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REGISTER PAGE ===== -->
+<div id="page-register" class="page">
+  <div class="login-bg-new"></div>
+
+  <div class="login-center">
+    <div class="login-card-new">
+
+      <div class="login-brand-new">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2">
+          <path d="M12 2v20M2 12h20"/>
+        </svg>
+        <span>Smart Doctor</span>
+      </div>
+
+      <h2 class="login-title-new">Create Account</h2>
+      <p class="login-sub-new">Sign up to get started</p>
+
+      <div class="form-group-new">
+        <label class="label-new">FIRST NAME</label>
+        <input type="text" id="reg-firstname" class="input-new" placeholder="John">
+      </div>
+
+      <div class="form-group-new">
+        <label class="label-new">LAST NAME</label>
+        <input type="text" id="reg-lastname" class="input-new" placeholder="Doe">
+      </div>
+
+      <div class="form-group-new">
+        <label class="label-new">EMAIL</label>
+        <input type="email" id="reg-email" class="input-new" placeholder="you@example.com">
+      </div>
+
+      <div class="form-group-new">
+        <label class="label-new">PASSWORD</label>
+        <input type="password" id="reg-password" class="input-new" placeholder="Min. 8 characters">
+      </div>
+
+      <div class="form-group-new">
+        <label class="label-new">I AM A</label>
+        <select id="reg-role" class="input-new" onchange="toggleDoctorFields(this.value)">
+          <option value="patient">Patient</option>
+          <option value="doctor">Doctor</option>
+        </select>
+      </div>
+
+      <!-- Doctor-only fields (hidden by default) -->
+      <div id="doctor-fields" style="display:none">
+        <div class="form-group-new">
+          <label class="label-new">SPECIALIZATION</label>
+          <select id="reg-spec" class="input-new">
+            <option value="General Practitioner">General Practitioner</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="Paediatrician">Paediatrician</option>
+            <option value="Neurologist">Neurologist</option>
+          </select>
+        </div>
+        <div class="form-group-new">
+          <label class="label-new">LICENSE NUMBER</label>
+          <input type="text" id="reg-license" class="input-new" placeholder="e.g. MMC-12345">
+        </div>
+      </div>
+
+      <!-- Patient-only badge -->
+
+      <button class="btn-signin" onclick="doRegister()">Create Account</button>
+
+      <p class="register-link-new">
+        Already have an account?
+        <a href="#" onclick="showLogin()">Sign in</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="page-app" class="page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon small">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#2563EB"/><path d="M14 6v16M6 14h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <span>Smart Doctor</span>
+    </div>
+
+    <div class="user-info">
+      <div class="user-initials" id="patient-initials">AT</div>
+      <div>
+        <div class="user-name" id="patient-sidebar-name">Aaron Tan</div>
+        <div class="user-role">Patient</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" onclick="navigate('home', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item" onclick="navigate('appointments', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        My Appointments
+      </a>
+      <a href="#" class="nav-item" onclick="navigate('search', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        Search Doctors
+      </a>
+      <a href="#" class="nav-item" onclick="navigate('notifications', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        Notifications
+      </a>
+      <a href="#" class="nav-item" onclick="navigate('settings', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <button class="logout-btn" onclick="doLogout()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Logout
+    </button>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="main-area"> 
+    <!-- ===== HOME VIEW ===== -->
+    <div id="view-home" class="view active">
+      <div class="view-content">
+        <div class="greeting-section">
+          <div>
+            <h1 class="greeting-title" id="patient-greeting">Good Morning 👋</h1>
+            <p class="greeting-sub">You have 1 upcoming appointment today.</p>
+          </div>
+        </div>
+
+        <!-- Upcoming Appointment Banner (populated by JS) -->
+        <div id="home-appt-banner"></div>
+
+        <!-- Find a Doctor -->
+        <div class="section-header">
+          <h2 class="section-title">Find a Doctor</h2>
+          <a href="#" class="view-all" onclick="navigate('search', document.querySelectorAll('.nav-item')[2])">View All</a>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterDoctors('all', this)">All</button>
+          <button class="filter-tab" onclick="filterDoctors('general', this)">General</button>
+          <button class="filter-tab" onclick="filterDoctors('cardiologist', this)">Cardiologist</button>
+          <button class="filter-tab" onclick="filterDoctors('dermatologist', this)">Dermatologist</button>
+          <button class="filter-tab" onclick="filterDoctors('paediatrician', this)">Paediatrician</button>
+          <button class="filter-tab" onclick="filterDoctors('neurologist', this)">Neurologist</button>
+        </div>
+
+        <div class="doctors-grid" id="home-doctors-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== APPOINTMENTS VIEW ===== -->
+    <div id="view-appointments" class="view">
+      <div class="view-content">
+        <h1 class="page-title">My Appointments</h1>
+        <div class="appointments-list" id="appointments-list">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SEARCH VIEW ===== -->
+    <div id="view-search" class="view">
+      <div class="view-content">
+        <h1 class="page-title">Search Doctors</h1>
+        <div class="search-bar-full">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" placeholder="Search by doctor name, specialization, or condition..." oninput="searchDoctors(this.value)">
+          <button class="filter-icon-btn">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+            Filters
+          </button>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterDoctors('all', this)">All</button>
+          <button class="filter-tab" onclick="filterDoctors('general', this)">General</button>
+          <button class="filter-tab" onclick="filterDoctors('cardiologist', this)">Cardiologist</button>
+          <button class="filter-tab" onclick="filterDoctors('dermatologist', this)">Dermatologist</button>
+          <button class="filter-tab" onclick="filterDoctors('paediatrician', this)">Paediatrician</button>
+          <button class="filter-tab" onclick="filterDoctors('neurologist', this)">Neurologist</button>
+        </div>
+        <div class="doctors-grid search-grid" id="search-doctors-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NOTIFICATIONS VIEW ===== -->
+    <div id="view-notifications" class="view">
+      <div class="view-content">
+        <div class="section-header">
+          <h1 class="page-title" style="margin:0">Notifications</h1>
+          <a href="#" class="view-all">Mark all as read</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS VIEW ===== -->
+    <div id="view-settings" class="view">
+      <div class="view-content">
+        <h1 class="page-title">Settings</h1>
+        <div class="settings-section">
+          <h3>Profile Information</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>First Name</label><input type="text" value="Aaron"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" value="Tan"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" value="aaron@example.com"></div>
+          <div class="form-group"><label>Phone</label><input type="tel" value="+60 12-345 6789"></div>
+          <button class="btn-primary">Save Changes</button>
+        </div>
+        <div class="settings-section">
+          <h3>Notifications</h3>
+          <div class="toggle-row"><span>Email notifications</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="toggle-row"><span>SMS reminders</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="toggle-row"><span>Push notifications</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-area -->
+</div><!-- end page-app -->
+
+<!-- ===== DOCTOR APP PAGE ===== -->
+<div id="page-doctor" class="page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="doctor-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon small">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#2563EB"/><path d="M14 6v16M6 14h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <span>Smart Doctor</span>
+    </div>
+
+    <div class="user-info">
+      <div class="user-initials" id="doctor-initials">AK</div>
+      <div>
+        <div class="user-name" id="doctor-sidebar-name">Dr. Ahmad Khan</div>
+        <div class="user-role">Doctor</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" onclick="navigateDoctor('doc-dashboard', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="nav-item" onclick="navigateDoctor('doc-requests', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Appointment Requests
+        <span class="nav-badge" id="requests-badge">2</span>
+      </a>
+      <a href="#" class="nav-item" onclick="navigateDoctor('doc-schedule', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        My Schedule
+      </a>
+      <a href="#" class="nav-item" onclick="navigateDoctor('doc-availability', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Set Availability
+      </a>
+      <a href="#" class="nav-item" onclick="navigateDoctor('doc-notifications', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        Notifications
+      </a>
+      <a href="#" class="nav-item" onclick="navigateDoctor('doc-settings', this)">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <button class="logout-btn" onclick="doLogout()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Logout
+    </button>
+  </aside>
+
+  <!-- Doctor Main Area -->
+  <div class="main-area"> 
+    <div class="views-container">
+
+      <!-- ===== DOCTOR DASHBOARD ===== -->
+      <div id="view-doc-dashboard" class="view active">
+        <div class="view-content">
+          <h1 class="page-title" id="doc-greeting">Good Morning, Dr. Ahmad 👋</h1>
+
+          <!-- Stats Row -->
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#eff6ff">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563EB"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+              </div>
+              <div>
+                <div class="stat-value" id="stat-today-patients">—</div>
+                <div class="stat-label">Today's Patients</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#f0fdf4">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#16a34a"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <div class="stat-value" id="stat-pending">—</div>
+                <div class="stat-label">Pending Requests</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#fef9c3">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ca8a04"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+              </div>
+              <div>
+                <div class="stat-value" id="stat-rating">—</div>
+                <div class="stat-label">Average Rating</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Upcoming Appointments -->
+          <div class="section-header" style="margin-top:32px">
+            <h2 class="section-title">Upcoming Appointments</h2>
+            <a href="#" class="view-all" onclick="navigateDoctor('doc-schedule', document.querySelector('#doctor-sidebar .nav-item:nth-child(3)'))">View All</a>
+          </div>
+          <div id="doc-upcoming-list"></div>
+        </div>
+      </div>
+
+      <!-- ===== APPOINTMENT REQUESTS ===== -->
+      <div id="view-doc-requests" class="view"1>
+        <div class="view-content">
+          <h1 class="page-title">Appointment Requests</h1>
+          <p style="color:#6b7280;margin-bottom:24px">Review and respond to incoming appointment requests from patients.</p>
+          <div id="doc-requests-list"></div>
+        </div>
+      </div>
+
+      <!-- ===== MY SCHEDULE ===== -->
+      <div id="view-doc-schedule" class="view">
+        <div class="view-content">
+          <h1 class="page-title">My Schedule</h1>
+          <div id="doc-schedule-list"></div>
+        </div>
+      </div>
+
+      <!-- ===== SET AVAILABILITY ===== -->
+      <div id="view-doc-availability" class="view">
+        <div class="view-content">
+          <h1 class="page-title">Set Availability</h1>
+          <p style="color:#6b7280;margin-bottom:28px">Set your available time slots. Followed patients will be notified automatically.</p>
+
+          <div class="settings-section">
+            <h3>Current Status</h3>
+            <div class="toggle-row">
+              <span>I am currently available for appointments</span>
+              <label class="toggle">
+                <input type="checkbox" id="doc-status-toggle" checked onchange="toggleDoctorStatus(this)">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <p id="doc-status-label" style="margin-top:10px;color:#16a34a;font-weight:600;font-size:0.9rem">● Available</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>Add New Time Slot</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="avail-date" class="input-new">
+              </div>
+              <div class="form-group">
+                <label>Start Time</label>
+                <input type="time" id="avail-start" class="input-new">
+              </div>
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="time" id="avail-end" class="input-new">
+              </div>
+            </div>
+            <button class="btn-primary" onclick="saveAvailability()">Save & Notify Followers</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DOCTOR NOTIFICATIONS ===== -->
+      <div id="view-doc-notifications" class="view">
+        <div class="view-content">
+          <div class="section-header">
+            <h1 class="page-title" style="margin:0">Notifications</h1>
+            <div style="display:flex;gap:12px">
+              <a href="#" class="view-all" onclick="clearAllDoctorNotifs()" style="color:#dc2626">Clear all</a>
+              <a href="#" class="view-all" onclick="markAllDoctorNotifsRead()">Mark all as read</a>
+            </div>
+          </div>
+          <div id="doc-notif-list" style="margin-top:20px">
+            <p style="color:#9ca3af">Loading notifications...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DOCTOR SETTINGS ===== -->
+      <div id="view-doc-settings" class="view">
+        <div class="view-content">
+          <h1 class="page-title">Settings</h1>
+          <div class="settings-section">
+            <h3>Profile Information</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Full Name</label><input type="text" class="input-new" id="settings-doc-name"></div>
+              <div class="form-group"><label>Email</label><input type="email" class="input-new" id="settings-doc-email"></div>
+            </div>
+            <div class="form-group"><label>Specialization</label><input type="text" class="input-new" id="settings-doc-spec"></div>
+            <div class="form-group"><label>License Number</label><input type="text" class="input-new" id="settings-doc-license"></div>
+          </div>
+          <div class="settings-section">
+            <h3>Notifications</h3>
+            <div class="toggle-row"><span>Email notifications</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="toggle-row"><span>New appointment alerts</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="toggle-row"><span>Push notifications</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end views-container -->
+  </div><!-- end main-area -->
+</div><!-- end page-doctor -->
+
+<!-- ===== BOOKING MODAL ===== -->
+<div id="booking-modal" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBookingModal()">✕</button>
+    <h2 class="modal-title">Book Appointment</h2>
+    <div id="booking-doctor-info" class="booking-doctor-info"></div>
+    <div class="form-group">
+      <label>Select Date</label>
+      <input type="date" id="booking-date">
+    </div>
+    <div class="form-group">
+      <label>Select Time</label>
+      <div class="time-slots" id="time-slots">
+        <button class="time-slot" onclick="selectTime(this)">09:00 AM</button>
+        <button class="time-slot" onclick="selectTime(this)">10:00 AM</button>
+        <button class="time-slot" onclick="selectTime(this)">11:00 AM</button>
+        <button class="time-slot" onclick="selectTime(this)">02:00 PM</button>
+        <button class="time-slot" onclick="selectTime(this)">03:00 PM</button>
+        <button class="time-slot" onclick="selectTime(this)">04:00 PM</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Consultation Type</label>
+      <select><option>Video Consultation</option><option>In-person</option></select>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="booking-notes" placeholder="Describe your symptoms or reason for visit..." rows="3"></textarea>
+    </div>
+    <button class="btn-primary full" onclick="confirmBooking()">Confirm Booking</button>
+  </div>
+</div>
+
+<!-- ===== VIDEO ROOM ===== -->
+<div id="video-room" class="page">
+  <div class="video-layout">
+    <div class="video-main">
+      <div class="video-doctor-feed">
+        <div class="video-placeholder">
+          <div style="width:80px;height:80px;border-radius:50%;background:#2563EB;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;opacity:0.6">👨‍⚕️</div>
+          <p style="color:#fff;opacity:0.5;margin-top:12px;">Doctor's camera</p>
+        </div>
+        <div class="doctor-label" id="video-room-label">Consultation Room</div>
+      </div>
+      <div class="video-self-feed">
+        <video id="patient-video" autoplay muted playsinline></video>
+      </div>
+      <div class="video-controls">
+        <button class="vc-btn" title="Mute">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+        </button>
+        <button class="vc-btn" title="Camera">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        </button>
+        <button class="vc-btn" title="Chat">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        </button>
+        <button class="vc-btn" title="Screen Share">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </button>
+        <button class="vc-btn end-call" onclick="endCall()" title="End Call">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="video-sidebar">
+      <div class="chat-header">Session Chat</div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg doctor">
+          <div class="msg-bubble">Hello Aaron, how are you feeling today?</div>
+          <div class="msg-time">10:01 AM</div>
+        </div>
+        <div class="chat-msg patient">
+          <div class="msg-bubble">Hi Doctor, I have been having headaches for 3 days.</div>
+          <div class="msg-time">10:02 AM</div>
+        </div>
+        <div class="chat-msg doctor">
+          <div class="msg-bubble">I see. Can you describe the pain? Is it throbbing or constant?</div>
+          <div class="msg-time">10:03 AM</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        </button>
+      </div>
+    </div>
+  </div><!-- end video-layout -->
+</div><!-- end video-room -->
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="app.js?v=2"></script>
+</body>
+</html>
