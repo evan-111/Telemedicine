@@ -18,7 +18,7 @@ function clearPatternLog() { console.log('--- pattern log ---'); }
 // API BASE URL — full XAMPP localhost path
 // Change 'SOFTWARE DESIGN' if your htdocs folder name is different
 // ============================================================
-const API = 'http://localhost/telemedicine/api';
+const API = window.location.origin + '/telemedicine/api';
 
 // Tries both spellings of the appointments filename so it works regardless of how the file is named on disk
 async function fetchAppointments(queryString) {
