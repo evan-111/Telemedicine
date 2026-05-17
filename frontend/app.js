@@ -6,6 +6,8 @@ const appointments = []; // populated by appointments.php on login
 
 // ── FIX: these were used everywhere but never defined ────────
 const consultationRooms = {};
+let peer = null;
+let currentCall = null;
 function patternLog(type, message) {
   const icons = { proxy: '🛡️', mediator: '🔗', state: '⚡', observer: '👁️' };
   console.log(`[${icons[type] || '📋'} ${type.toUpperCase()}] ${message}`);
@@ -562,7 +564,7 @@ function renderAppointments() {
 function getApptActions(a) {
   if (a.status === 'confirmed' || a.status === 'accepted') return `
     <span class="status-badge confirmed">Confirmed</span>
-    <button class="btn-appt-join" onclick="openVideoRoom(${a.id})">
+    <button class="btn-appt-join" onclick="openVideoRoom('${a.roomCode}','${a.name}')">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
       Join
     </button>`;
@@ -796,25 +798,65 @@ async function startPatientCamera() {
   }
 }
 
-function openVideoRoom(roomCode, label) {
+async function openVideoRoom(roomCode, label) {
+  // Clear chat
   const chatEl = document.getElementById('chat-messages');
   if (chatEl) chatEl.innerHTML = '';
-
-  const roomLabel = document.getElementById('video-room-label');
-  if (roomLabel) {
-    roomLabel.textContent = roomCode
-      ? `Room: ${roomCode}${label ? ' · ' + label : ''}`
-      : 'Consultation Room';
-  }
-
+  
+  // Get local camera first
+  await startPatientCamera();
+  if (!patientStream) return;
+  // Show video room
   const vr = document.getElementById('video-room');
-  vr.style.display  = 'flex';
+  vr.style.display = 'flex';
   vr.style.position = 'fixed';
-  vr.style.inset    = '0';
-  vr.style.zIndex   = '500';
-
-  navigate('video-room');
-  startPatientCamera();
+  vr.style.inset = '0';
+  vr.style.zIndex = '500';
+  const roomLabel = document.getElementById('video-room-label');
+  
+  if (currentRole === 'doctor') {
+    // Doctor — listens for incoming call using room code as their peer ID
+    peer = new Peer(roomCode);
+    peer.on('open', () => {
+      if (roomLabel) roomLabel.textContent = `Waiting for patient to join... · ${label || ''}`;
+    });
+    peer.on('call', (call) => {
+      currentCall = call;
+      call.answer(patientStream); // send local video
+      call.on('stream', (remoteStream) => {
+        const remoteVideo = document.getElementById('remote-video');
+        if (remoteVideo) remoteVideo.srcObject = remoteStream;
+      });
+      if (roomLabel) roomLabel.textContent = `Connected · ${label || ''}`;
+    });
+    peer.on('error', (err) => {
+      console.error('PeerJS error:', err);
+      if (roomLabel) roomLabel.textContent = 'Connection error';
+    });
+  } else {
+    // Patient — calls the doctor's room code
+    peer = new Peer();
+    peer.on('open', (myId) => {
+      if (roomLabel) roomLabel.textContent = `Connecting to ${label || 'doctor'}...`;
+      const call = peer.call(roomCode, patientStream);
+      currentCall = call;
+      call.on('stream', (remoteStream) => {
+        const remoteVideo = document.getElementById('remote-video');
+        if (remoteVideo) remoteVideo.srcObject = remoteStream;
+      });
+      call.on('error', (err) => {
+        console.error('PeerJS call error:', err);
+        showToast('Call connection failed', 'error');
+      });
+      call.on('close', () => {
+        if (roomLabel) roomLabel.textContent = 'Call ended';
+      });
+    });
+    peer.on('error', (err) => {
+      console.error('PeerJS error:', err);
+      if (roomLabel) roomLabel.textContent = 'Connection error';
+    });
+  }
 }
 
 function endCall() {
@@ -825,6 +867,16 @@ function endCall() {
   if (patientStream) {
     patientStream.getTracks().forEach(track => track.stop());
   }
+
+  if (currentCall) { 
+    currentCall.close(); currentCall = null; 
+  }
+  if (peer) { 
+    peer.destroy(); peer = null; 
+  }
+
+  const rv = document.getElementById('remote-video');
+  if (rv) rv.srcObject = null;
 
   // Return to the correct page based on who is logged in
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));

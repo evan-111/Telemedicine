@@ -515,12 +515,9 @@
   <div class="video-layout">
     <div class="video-main">
       <div class="video-doctor-feed">
-        <div class="video-placeholder">
-          <div style="width:80px;height:80px;border-radius:50%;background:#2563EB;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;opacity:0.6">👨‍⚕️</div>
-          <p style="color:#fff;opacity:0.5;margin-top:12px;">Doctor's camera</p>
+          <video id="remote-video" autoplay playsinline style="width:100%;height:100%;object-fit:cover;border-radius:12px;background:#1a1a2e"></video>
+          <div class="doctor-label" id="video-room-label">Consultation Room</div>
         </div>
-        <div class="doctor-label" id="video-room-label">Consultation Room</div>
-      </div>
       <div class="video-self-feed">
         <video id="patient-video" autoplay muted playsinline></video>
       </div>
@@ -570,7 +567,7 @@
 
 <!-- Toast -->
 <div id="toast" class="toast"></div>
-
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script src="app.js?v=2"></script>
 </body>
 </html>
