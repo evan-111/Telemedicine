@@ -1,4 +1,4 @@
-# Smart Doctor Booking — Telemedicine System
+# Smart Doctor Booking — Telemedicine System with webrtc
 Telemedicine is a school project i have for my software design class where we need to use design pattern to code a health system or a school system , i chose the health system . The primary goal of telemedicine is to demonstrate the design pattern used to build the web system. It is design to centralised all the feature of a online doctor booking system for video consultation with doctors . 
 
 After the my semester have ended and i have gotten my software design class grade , i decided to come back to this project to add more "realistic" feature , previosuly my lecturer only want to see the workings of the design pattern therefore i did not integrate a real webcam system in the code, but now coming back here this is what i want to do with webrtc with my second laptop and my homelab running promxox with ubuntu vm to simulate it.
